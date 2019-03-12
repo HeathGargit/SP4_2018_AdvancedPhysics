@@ -50,4 +50,17 @@ public abstract class HPRigidBody : PhysicsObject
         actor2.ApplyForce(force);
         ApplyForce(-force);
     }
+
+    void ResolveCollision(HPRigidBody actor2)
+    {
+        Vector2 normal = (actor2.Position - m_Position).normalized;
+        Vector2 relativeVelocity = actor2.Velocity - m_Velocity;
+
+        float elasticity = 1.0f;
+        float j = Vector2.Dot(-(1 + elasticity) * (relativeVelocity), normal) / Vector2.Dot(normal, normal * ((1 / m_Mass) + (1 / actor2.Mass)));
+
+        Vector2 force = normal * j;
+
+        ApplyForceToActor(actor2, -force);
+    }
 }
