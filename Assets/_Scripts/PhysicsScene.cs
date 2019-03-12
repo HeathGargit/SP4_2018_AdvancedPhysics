@@ -13,6 +13,9 @@ public class PhysicsScene
     public Vector2 Gravity { get => m_Gravity; set => m_Gravity = value; }
     public float TimeStep { get => m_TimeStep; set => m_TimeStep = value; }
 
+    public delegate bool CollisionFunction(PhysicsObject inputA, PhysicsObject inputB);
+    public static CollisionFunction[] CollisionFunctions = { Plane2Plane, Plane2Sphere, Plane2Box, Sphere2Plane, Sphere2Sphere, Sphere2Box, Box2Plane, Box2Sphere, Box2Box };
+
     public PhysicsScene()
     {
         m_TimeStep = 0.01f;
@@ -48,7 +51,7 @@ public class PhysicsScene
 
             accumulatedTime -= m_TimeStep;
 
-            //check for collisions and do stuff
+            /*//check for collisions and do stuff
             foreach(PhysicsObject pActor in m_Actors) //for each actor
             {
                 foreach(PhysicsObject pOther in m_Actors) //check against all other actors
@@ -73,7 +76,9 @@ public class PhysicsScene
                         dirty.Add(pOther);
                     }
                 }
-            }
+            }*/
+
+            CheckForCollisions();
 
             dirty.Clear(); //clear out the dirty list.
         }
@@ -96,5 +101,129 @@ public class PhysicsScene
             pActor.Debug();
             count++;
         }
+    }
+
+    public void CheckForCollisions()
+    {
+        int actorCount = m_Actors.Count;
+
+        for(int outer = 0; outer < actorCount - 1; outer++)
+        {
+            for(int inner = outer + 1; inner < actorCount; inner++)
+            {
+                PhysicsObject outerObject = m_Actors[outer];
+                PhysicsObject innerObject = m_Actors[inner];
+                int functionIndex = (innerObject.ShapeID * PhysicsObject.SHAPE_COUNT) + outerObject.ShapeID;
+                
+                if(CollisionFunctions[functionIndex] != null)
+                {
+                    CollisionFunctions[functionIndex](outerObject, innerObject);
+                }
+            }
+        }
+    }
+
+    public static bool Plane2Plane(PhysicsObject inputA, PhysicsObject inputB)
+    {
+        return false;
+    }
+
+    public static bool Plane2Sphere(PhysicsObject inputA, PhysicsObject inputB)
+    {
+        HPPlane planeA;
+        HPSphere sphereB;
+        if (inputA.ShapeID == 0)
+        {
+            planeA = (HPPlane)inputA;
+            sphereB = (HPSphere)inputB;
+        }
+        else
+        {
+            planeA = (HPPlane)inputB;
+            sphereB = (HPSphere)inputA;
+        }
+
+        if (planeA != null && sphereB != null)
+        {
+            Vector2 collisionNormal = planeA.Normal;
+            float planeToSphere = Vector2.Dot(sphereB.Position, collisionNormal) + planeA.Distance;
+
+            if(Mathf.Abs(planeToSphere) <= sphereB.Radius)
+            {
+                sphereB.ApplyForce(-sphereB.Velocity);
+
+                return true;
+            }
+
+            /*float sphereToPlane = Vector2.Dot(sphereB.Position, collisionNormal) - planeA.Distance; //distance form the center of the circle to the plane
+
+            if(sphereToPlane < 0)
+            {
+                collisionNormal *= -1;
+                sphereToPlane *= -1;
+            }
+
+            float intersection = sphereB.Radius - sphereToPlane;
+            if (intersection > 0)
+            {
+                sphereB.ApplyForce(-sphereB.Velocity);
+
+                return true;
+            }*/
+        }
+
+
+        return false;
+    }
+
+    public static bool Plane2Box(PhysicsObject inputA, PhysicsObject inputB)
+    {
+        return false;
+    }
+
+    public static bool Sphere2Plane(PhysicsObject inputA, PhysicsObject inputB)
+    {
+        return Plane2Sphere(inputB, inputA);
+    }
+
+    public static bool Sphere2Sphere(PhysicsObject inputA, PhysicsObject inputB)
+    {
+        //cast the objects to spheres
+        HPSphere sphereA = (HPSphere)inputA;
+        HPSphere sphereB = (HPSphere)inputB;
+
+        if(sphereA != null && sphereB != null) //if the spheres were cast correctly
+        {
+            //calculate values for collision check
+            float distance = Vector2.Distance(sphereB.Position, sphereA.Position);
+            float impactDistance = sphereA.Radius + sphereB.Radius;
+            if (distance <= impactDistance) //if we collided
+            {
+                sphereA.ApplyForce(-sphereA.Velocity); //set to 0 for now.
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static bool Sphere2Box(PhysicsObject inputA, PhysicsObject inputB)
+    {
+        return false;
+    }
+
+    public static bool Box2Plane(PhysicsObject inputA, PhysicsObject inputB)
+    {
+        return Plane2Box(inputB, inputA);
+    }
+
+    public static bool Box2Sphere(PhysicsObject inputA, PhysicsObject inputB)
+    {
+        return Sphere2Box(inputB, inputA);
+    }
+
+    public static bool Box2Box(PhysicsObject inputA, PhysicsObject inputB)
+    {
+        return false;
     }
 }

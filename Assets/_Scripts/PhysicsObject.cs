@@ -7,6 +7,8 @@ public abstract class PhysicsObject
 
     protected enum ShapeType { PLANE, SPHERE, BOX };
     protected ShapeType m_ShapeId;
+    public static int SHAPE_COUNT = System.Enum.GetNames(typeof(ShapeType)).Length;
+    public int ShapeID { get => (int)m_ShapeId; }
 
     public abstract void FixedUpdate(Vector2 gravity, float timestep);
     public abstract void Debug();

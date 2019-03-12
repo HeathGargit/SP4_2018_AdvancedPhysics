@@ -27,9 +27,11 @@ public class SimController : MonoBehaviour
         m_PhysicsScene.AddActor(ball1);
         HPSphere ball2 = new HPSphere(new Vector2(2.0f, 0), new Vector2(0,0), 0.0f, 1.0f, 0.5f, new Vector4(255, 255, 255, 1));
         m_PhysicsScene.AddActor(ball2);
+        HPPlane plane1 = new HPPlane(new Vector2(0.2f,1), 4, new Vector4(255, 255, 255, 1));
+        m_PhysicsScene.AddActor(plane1);
 
-        ball1.ApplyForce(new Vector2(0.4f, 0));
-        ball2.ApplyForce(new Vector2(-0.4f, 0));
+        ball1.ApplyForce(new Vector2(0, -1.0f));
+        ball2.ApplyForce(new Vector2(0, -1.0f));
     }
 
     // Update is called once per frame
