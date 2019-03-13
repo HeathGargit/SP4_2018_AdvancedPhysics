@@ -194,4 +194,21 @@ public class PhysicsScene
     {
         return false;
     }
+
+    public PhysicsObject GetPOAtPoint(Vector2 clickedPoint)
+    {
+        PhysicsObject toReturn = null;
+        foreach(PhysicsObject pObject in m_Actors)
+        {
+            if(pObject.GetType() == typeof(BilliardBall))
+            {
+                BilliardBall aBall = (BilliardBall)pObject;
+                if(aBall.CheckCollision(clickedPoint))
+                {
+                    toReturn = pObject;
+                }
+            }
+        }
+        return toReturn;
+    }
 }
