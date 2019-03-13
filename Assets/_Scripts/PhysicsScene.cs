@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class PhysicsScene
@@ -38,8 +37,6 @@ public class PhysicsScene
     {
         //Debug.Log(dt);
 
-        List<PhysicsObject> dirty = new List<PhysicsObject>();
-
         accumulatedTime += dt;
 
         while(accumulatedTime >= m_TimeStep) //check if enough time has passed to do a fixed update
@@ -51,36 +48,7 @@ public class PhysicsScene
 
             accumulatedTime -= m_TimeStep;
 
-            /*//check for collisions and do stuff
-            foreach(PhysicsObject pActor in m_Actors) //for each actor
-            {
-                foreach(PhysicsObject pOther in m_Actors) //check against all other actors
-                {
-                    if(pActor == pOther) //if the actors are the same actor
-                    {
-                        continue; // move to the next iteration of the while loop
-                    }
-
-                    if(dirty.Contains(pActor) && dirty.Contains(pOther)) //if both actors are in the dirty list
-                    {
-                        continue; //their collisions have been checked, so we can move into the next iteration of the while loop
-                    }
-
-                    // check for the collision
-                    HPRigidBody pRigid = (HPRigidBody)pActor;
-                    if(pRigid.CheckCollision(pOther)) //if there is a collision
-                    {
-                        pRigid.ApplyForceToActor((HPRigidBody)pOther, pRigid.Velocity * pRigid.Mass); //apply NEWTONS THIRD LAW
-                        //add both to the dirty list
-                        dirty.Add(pRigid);
-                        dirty.Add(pOther);
-                    }
-                }
-            }*/
-
             CheckForCollisions();
-
-            dirty.Clear(); //clear out the dirty list.
         }
     }
 

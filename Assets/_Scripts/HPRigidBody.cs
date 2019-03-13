@@ -21,6 +21,8 @@ public abstract class HPRigidBody : PhysicsObject
         m_Velocity = velocity;
         m_Rotation = rotation;
         m_Mass = mass;
+        m_LinearDrag = 0.3f;
+        m_AngularDrag = 0.3f;
     }
 
     //abstract functions
@@ -31,6 +33,15 @@ public abstract class HPRigidBody : PhysicsObject
     {
         // applies gravity
         ApplyForce(gravity * m_Mass * timestep);
+
+        //apply drag
+        m_Velocity -= m_Velocity * m_LinearDrag * timestep;
+
+        //stability threshold
+        if(Vector2.Distance(Vector2.zero, m_Velocity) <= 0.01)
+        {
+            m_Velocity = Vector2.zero;
+        }
 
         //updates the position based on velocity.
         m_Position += m_Velocity * timestep;
