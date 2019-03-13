@@ -54,4 +54,16 @@ public class HPPlane : PhysicsObject
     }
 
     //member functions
+    public void ResolveCollision(HPRigidBody actor2)
+    {
+        Vector2 relativeVelocity = actor2.Velocity;
+
+        float elasticity = 1.0f;
+        float j = Vector2.Dot(-(1 + elasticity) * (relativeVelocity), m_Normal) / (1 / actor2.Mass);
+
+        Vector2 force = m_Normal * j;
+
+        actor2.ApplyForce(force);
+    }
+
 }

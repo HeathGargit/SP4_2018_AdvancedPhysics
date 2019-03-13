@@ -23,15 +23,23 @@ public class SimController : MonoBehaviour
         m_PhysicsScene.Gravity = new Vector2(0, 0);
 
         //add actors
-        HPSphere ball1 = new HPSphere(new Vector2(-2.0f, 0f), new Vector2(0,0), 0.0f, 3.0f, 0.5f, new Vector4(255, 255, 255, 1));
+        HPSphere ball1 = new HPSphere(new Vector2(-4.0f, 0.3f), new Vector2(0,0), 0.0f, 1.0f, 0.5f, new Vector4(255, 255, 255, 1));
         m_PhysicsScene.AddActor(ball1);
-        HPSphere ball2 = new HPSphere(new Vector2(2.0f, 0), new Vector2(0,0), 0.0f, 1.0f, 0.5f, new Vector4(255, 255, 255, 1));
+        HPSphere ball2 = new HPSphere(new Vector2(4.0f, 0), new Vector2(0,0), 0.0f, 1.0f, 0.5f, new Vector4(255, 255, 255, 1));
         m_PhysicsScene.AddActor(ball2);
-        HPPlane plane1 = new HPPlane(new Vector2(0.2f,1), 4, new Vector4(255, 255, 255, 1));
+        HPPlane plane1 = new HPPlane(new Vector2(0.05f,1), 4, new Vector4(255, 255, 255, 1));
         m_PhysicsScene.AddActor(plane1);
+        HPPlane topbound = new HPPlane(new Vector2(0, -1.0f), 4.5f, new Vector4(255, 255, 255, 1));
+        m_PhysicsScene.AddActor(topbound);
+        HPPlane rightbound = new HPPlane(new Vector2(-1.0f, 0), 8.5f, new Vector4(255, 255, 255, 1));
+        m_PhysicsScene.AddActor(rightbound);
+        HPPlane bottombound = new HPPlane(new Vector2(0, 1.0f), 4.5f, new Vector4(255, 255, 255, 1));
+        m_PhysicsScene.AddActor(bottombound);
+        HPPlane leftbound = new HPPlane(new Vector2(1.0f, 0), 8.5f, new Vector4(255, 255, 255, 1));
+        m_PhysicsScene.AddActor(leftbound);
 
-        ball1.ApplyForce(new Vector2(0, -1.0f));
-        ball2.ApplyForce(new Vector2(0, -1.0f));
+        ball1.ApplyForce(new Vector2(1.0f, 0f));
+        ball2.ApplyForce(new Vector2(-3.0f, 0f));
     }
 
     // Update is called once per frame

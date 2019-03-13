@@ -5,6 +5,7 @@ public abstract class HPRigidBody : PhysicsObject
     //member variables
     protected Vector2 m_Position, m_Velocity;
     protected float m_Rotation, m_Mass;
+    protected float m_LinearDrag, m_AngularDrag;
 
     //accessors
     public Vector2 Position { get => m_Position; }
@@ -51,16 +52,17 @@ public abstract class HPRigidBody : PhysicsObject
         ApplyForce(-force);
     }
 
-    void ResolveCollision(HPRigidBody actor2)
+    public void ResolveCollision(HPRigidBody actor2)
     {
-        Vector2 normal = (actor2.Position - m_Position).normalized;
+        Vector2 normal = (actor2.Position - m_Position);
+        normal.Normalize();
         Vector2 relativeVelocity = actor2.Velocity - m_Velocity;
 
         float elasticity = 1.0f;
-        float j = Vector2.Dot(-(1 + elasticity) * (relativeVelocity), normal) / Vector2.Dot(normal, normal * ((1 / m_Mass) + (1 / actor2.Mass)));
+        float j = Vector2.Dot(-((1 + elasticity) * (relativeVelocity)), normal) / Vector2.Dot(normal, normal * ((1 / m_Mass) + (1 / actor2.Mass)));
 
         Vector2 force = normal * j;
 
-        ApplyForceToActor(actor2, -force);
+        ApplyForceToActor(actor2, force);
     }
 }

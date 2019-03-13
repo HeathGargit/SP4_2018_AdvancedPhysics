@@ -150,7 +150,7 @@ public class PhysicsScene
 
             if(Mathf.Abs(planeToSphere) <= sphereB.Radius)
             {
-                sphereB.ApplyForce(-sphereB.Velocity);
+                planeA.ResolveCollision(sphereB);
 
                 return true;
             }
@@ -199,7 +199,7 @@ public class PhysicsScene
             float impactDistance = sphereA.Radius + sphereB.Radius;
             if (distance <= impactDistance) //if we collided
             {
-                sphereA.ApplyForce(-sphereA.Velocity); //set to 0 for now.
+                sphereA.ResolveCollision(sphereB); //set to 0 for now.
                 return true;
             }
         }
